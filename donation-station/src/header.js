@@ -17,7 +17,7 @@ function Header(){
     return(
         <>
             <div className="header">
-                <h1>Donation Station</h1>
+                <h1 onClick={()=>{navigate("/home")}}>Donation Station</h1>
 
                 <div>
                     {!user ? (currentUrl == "/" ? <button onClick={()=>{navigate("/signUp")}}>Signup</button> :  <button onClick={()=>{navigate("/")}}>Login</button>)

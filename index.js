@@ -190,4 +190,112 @@ app.post("/getUserDonations",  (req, res) => {
         }
     })
 })
+
+// delete donation request from database given donation request ID
+app.post("/deleteDonationRequest",  (req, res) => {
+    const donationRequestId = req.body.donationRequestId;
+
+    db.query(`delete from donation_requests where donationRequestId = ?`, [donationRequestId], (err, result) => {
+        if (err){console.log(err)}
+
+        else{
+            res.send("ok")
+        }
+    })
+})
+
+// delete donation offer from database given donation offer ID
+app.post("/deleteDonations",  (req, res) => {
+    const donationId = req.body.donationId;
+
+    db.query(`delete from donations where donationId = ?`, [donationId], (err, result) => {
+        if (err){console.log(err)}
+
+        else{
+            res.send("ok")
+        }
+    })
+})
   
+// get info of one donation request
+app.post("/getDonationRequestInfo",  (req, res) => {
+    const donationRequestId = req.body.donationRequestId;
+
+    db.query(`select donation_requests.*, users.username from donation_requests left join users on users.userId = donation_requests.userId where donation_requests.donationRequestId = ?`, [donationRequestId], (err, result) => {
+        if (err){console.log(err)}
+
+        else{
+            res.send({donationRequestInfo: result[0]})
+        }
+    })
+})
+
+// get info of one donation offer
+app.post("/getDonationOfferInfo",  (req, res) => {
+    const donationId = req.body.donationId;
+
+    db.query(`select donations.*, users.username from donations left join users on users.userId = donations.userId where donations.donationId = ?`, [donationId], (err, result) => {
+        if (err){console.log(err)}
+
+        else{
+            res.send({donationOfferInfo: result[0]})
+        }
+    })
+})
+
+// get messages of one donation request/offer
+app.post("/getDonationMessages",  (req, res) => {
+    const donationId = req.body.donationId;
+    const type = req.body.type;
+    console.log(type)
+    db.query(`select messages.*, users.username from messages left join users on users.userId = messages.messagerId where messages.originalPostId = ? and type = ?`, [donationId, type], (err, result) => {
+        if (err){console.log(err)}
+    
+        else{
+            res.send({messages: result})
+        }
+    })
+})
+
+// get donation offer suggestions of one donation request
+app.post("/getDonationOfferSuggestions",  (req, res) => {
+    const donationRequestType = req.body.donationRequestType;
+
+    db.query(`select donations.*, users.username from donations left join users on users.userId = donations.userId where donations.donationType = ?`, [donationRequestType], (err, result) => {
+        if (err){console.log(err)}
+    
+        else{
+            res.send({donationOfferSuggestions: result})
+        }
+    })
+})
+
+// get donation request suggestions of one donation offer
+app.post("/getDonationRequestSuggestions",  (req, res) => {
+    const donationOfferType = req.body.donationOfferType;
+
+    db.query(`select donation_requests.*, users.username from donation_requests left join users on users.userId = donation_requests.userId where donation_requests.donationType = ?`, [donationOfferType], (err, result) => {
+        if (err){console.log(err)}
+    
+        else{
+            res.send({donationRequestSuggestions: result})
+        }
+    })
+})
+
+// adding message to database
+app.post("/postMessage",  (req, res) => {
+    const messagerId = req.body.messagerId;
+    const originalPostId = req.body.originalPostId;
+    const type = req.body.type;
+    const message = req.body.message;
+
+    db.query(`insert into messages(messagerId, originalPostId, type, message) values(?, ?, ?, ?)`, 
+    [messagerId, originalPostId, type, message], (err, result) => {
+        if (err){console.log(err)}
+
+        else{
+            res.send({messageId: result.insertId})
+        }
+    })
+})

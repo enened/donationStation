@@ -5,6 +5,8 @@ import Header from './header.js';
 import LoginPage from './loginPage.js';
 import SignupPage from './signupPage.js';
 import Home from "./home.js";
+import ViewDonationRequest from './viewDonationRequest.js';
+import ViewDonationOffer from './viewDonationOffer.js';
 
 function App() {
   const [user, setUser] = useState(null)
@@ -17,7 +19,10 @@ function App() {
               <Route exact path="/" element={<LoginPage />}/>
               <Route exact path="/signUp" element={<SignupPage />}/>
               <Route exact path="/home" element={<Home />}/>
+              <Route exact path="/viewDonationRequest/:donationRequestId" element={<ViewDonationRequest />}/>
+              <Route exact path="/viewDonationOffer/:donationId" element={<ViewDonationOffer />}/>
               <Route path="*" element={<Navigate to="/" />}/>
+              
           </Routes>
       </Router>
     </Context.Provider>

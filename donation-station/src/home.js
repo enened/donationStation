@@ -6,6 +6,9 @@ import { Context } from "./context.js";
 import Popup from 'reactjs-popup';
 import RequestDonation from "./requestDonation.js"
 import OfferDonation from "./offerDonation.js";
+import * as geolib from 'geolib';
+import DonationRequestSlide from "./donationRequestSlide.js"
+import DonationOfferSlide from "./donationOfferSlide.js"
 
 function Home(){
     Axios.defaults.withCredentials = true;
@@ -18,17 +21,47 @@ function Home(){
     const [open, setOpen] = useState()
     const [openDonations, setOpenDonations] = useState()
 
+    function quickSortByDistance(array) {
+        if (array.length <= 1) {
+          return array;
+        }
+      
+        let distance = geolib.getDistance({latitude: parseInt(user.location.slice(0, user.location.indexOf(","))), longitude: parseInt(user.location.slice(user.location.indexOf(",") + 1, user.location.length))}, {
+            latitude: parseInt(array[0].coordinates.slice(0, array[0].coordinates.indexOf(","))), 
+            longitude: parseInt(array[0].coordinates.slice(array[0].coordinates.indexOf(",") + 1, array[0].coordinates.length + 1))
+        })
+
+        var pivot = distance;
+        
+        var left = []; 
+        var right = [];
+      
+        for (var i = 1; i < array.length; i++) {
+
+            let distance = geolib.getDistance({latitude: parseInt(user.location.slice(0, user.location.indexOf(","))), longitude: parseInt(user.location.slice(user.location.indexOf(",") + 1, user.location.length))}, {
+                latitude: parseInt(array[i].coordinates.slice(0, array[i].coordinates.indexOf(","))), 
+                longitude: parseInt(array[i].coordinates.slice(array[i].coordinates.indexOf(",") + 1, array[i].coordinates.length + 1))
+            })
+
+            distance < pivot ? left.push(array[i]) : right.push(array[i]);
+        }
+      
+        return quickSortByDistance(left).concat(array[0], quickSortByDistance(right));
+    };
+
     const getInfo = (userId)=>{
         Axios.post("http://localhost:30013/getDonationRequests", {userId: userId}).then((response)=>{
-            setDonationRequests(response.data.donationRequests)  
+            var sorted = quickSortByDistance(response.data.donationRequests);
+            setDonationRequests(sorted)  
         })
 
         Axios.post("http://localhost:30013/getDonations", {userId: userId}).then((response)=>{
-            setDonations(response.data.donations)  
+            var sorted = quickSortByDistance(response.data.donations);
+            setDonations(sorted)  
         })
 
         Axios.post("http://localhost:30013/getUserDonationRequests", {userId: userId}).then((response)=>{
-            setUserDonationRequests(response.data.donationRequests)  
+            setUserDonationRequests(response.data.donationRequests)
         })
 
         Axios.post("http://localhost:30013/getUserDonations", {userId: userId}).then((response)=>{
@@ -59,56 +92,33 @@ function Home(){
             <h1>Home</h1>
 
             {/* Active donation requests */}
-            <h3>Your active donation requests:</h3>
+            <h3>Donations you are requesting:</h3>
             {userDonationRequests.map((val, index)=>{
                 return(
-                    <>
-                        <div className="donationSlides">
-                            <div>
-                                <p>Type: {val.donationType}</p>
-                                <p>Product: {val.specificProductRequest}</p>
-                                <p>Notes: {val.additionalNotes}</p>
-                            </div>
-
-                            <div>
-                                <p>Address: {val.formattedAddress}</p>
-                                <p style={{"textAlign":"center"}}>Pick-up time: <input className="time" type = "datetime-local" value={val.donationPickUpTime.substring(0, 16)} disabled/></p> 
-                            </div>
-                        </div>
-                    </>
+                    <DonationRequestSlide val = {val} index = {index} setDonationRequests = {setUserDonationRequests} donationRequests = {userDonationRequests}/>
                 )
                 
             })}
 
-            {userDonationRequests.length == 0 && <p className="inform">You haven't made any donations requests yet.</p>}
+            {userDonationRequests.length == 0 && <p className="inform">You don't have any active donation requests currently.</p>}
 
             <Popup open={open} closeOnDocumentClick = {false} trigger={<button onClick={()=>{setOpen(true)}}>Request donations</button>}>
                 <RequestDonation setOpen = {setOpen} setDonationRequests = {setUserDonationRequests}/>
             </Popup>
 
             {/* Active donation offers */}
-            <h3>Your active donation offers</h3>
+            <h3>Donations you are offering:</h3>
             {userDonations.map((val, index)=>{
 
                 return(
                     <>
-                        <div className="donationSlides">
-                            <div>
-                                <p>Type: {val.donationType}</p>
-                                <p>Product: {val.specificDonation}</p>
-                                <p>Notes: {val.additionalNotes}</p>
-                            </div>
+                        <DonationOfferSlide val = {val} index = {index} setDonations = {setUserDonations} donations = {userDonations}/>
 
-                            <div>
-                                <p>Address: {val.formattedAddress}</p>
-                                <p style={{"textAlign":"center"}}>Pick-up time: <input className="time" type = "datetime-local" value={val.donationDropOffTime.substring(0, 16)} disabled/></p> 
-                            </div>
-                        </div>
                     </>
                 )
             })}
 
-            {userDonations.length == 0 && <p className="inform">You haven't made any donations yet.</p>}
+            {userDonations.length == 0 && <p className="inform">You don't have any active donation offers currently.</p>}
 
             <Popup open={openDonations} closeOnDocumentClick = {false} trigger={<button onClick={()=>{setOpenDonations(true)}}>Offer donations</button>}>
                 <OfferDonation setOpen = {setOpenDonations} setDonations = {setUserDonations}/>
@@ -119,18 +129,8 @@ function Home(){
             {donationRequests.map((val, index)=>{
                 return(
                     <>
-                        <div className="donationSlides">
-                            <div>
-                                <p>Type: {val.donationType}</p>
-                                <p>Product: {val.specificProductRequest}</p>
-                                <p>Notes: {val.additionalNotes}</p>
-                            </div>
+                        <DonationRequestSlide val = {val} index = {index} setDonationRequests = {setDonationRequests} donationRequests = {donationRequests}/>
 
-                            <div>
-                                <p>Address: {val.formattedAddress}</p>
-                                <p style={{"textAlign":"center"}}>Pick-up time: <input className="time" type = "datetime-local" value={val.donationPickUpTime.substring(0, 16)} disabled/></p> 
-                            </div>
-                        </div>
                     </>
                 )
                 
@@ -140,17 +140,12 @@ function Home(){
 
 
             {/* Active donation offers of other users */}
-            <h3>Donation offers</h3>
+            <h3>Donation offers:</h3>
             {donations.map((val, index)=>{
                 return(
                     <>
-                        <div className="donationSlides">
-                            <p>Type: {val.donationType}</p>
-                            <p>Product: {val.specificProductRequest}</p>
-                            <p>Address: {val.formattedAddress}</p>
-                            <p>Drop-off tome: {val.donationPickUpTime}</p>
-                            <p>Notes: {val.additionalNotes}</p>
-                        </div>
+                        <DonationOfferSlide val = {val} index = {index} setDonations = {setDonations} donations = {donations}/>
+
                     </>
                 )
             })}

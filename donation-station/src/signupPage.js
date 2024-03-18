@@ -41,9 +41,6 @@ function SignupPage(){
                 if(user){
                     setUser(user)
                 }
-                else{
-                    navigate("/")
-                }
             })
         }
     }, [])

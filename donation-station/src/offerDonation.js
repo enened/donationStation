@@ -42,7 +42,7 @@ function OfferDonation({setDonations, setOpen}){
                 }/>
                 <br/>
 
-                <input required style={{"margin-top":"0px"}} onChange={(e)=>{setSpecificDonation(e.target.value)}} type = "text" placeholder="Specific product request"/>
+                <input required style={{"margin-top":"0px"}} onChange={(e)=>{setSpecificDonation(e.target.value)}} type = "text" placeholder="Specific donation"/>
                 <br/>
 
                 <Autocomplete
