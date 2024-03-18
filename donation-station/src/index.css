@@ -29,7 +29,7 @@ input{
   padding: 10px;
   width: 90%;
   margin: auto;
-  margin-top: 20px;
+  margin-bottom: 20px;
   border-radius: 5px;
   border: .5px solid gray;
   text-align: center;
@@ -53,13 +53,14 @@ input::placeholder{
 }
 
 .postSlide{
-  background-color: rgba(103,232,255,1);
+  background-color: rgb(110, 110, 236);
   width: 300px;
   height: 450px;
   padding: 50px;
   border-radius: 5px;
   min-width: fit-content;
   min-height: fit-content;
+  border: 1px solid white;
 }
 
 .dropdown{
@@ -156,7 +157,17 @@ textarea::-webkit-input-placeholder, input::-webkit-input-placeholder{
   border-radius: 5px;
   padding: 10px;
   margin: auto;
-  margin-top: 20px;
+  margin-top: 30px;
   color: white;
   width: 70%;
+}
+
+.unactiveTab{
+  background-color: rgba(65,65,236,1);
+  margin: 10px;
+}
+
+.activeTab{
+  background-color: rgb(110, 110, 236);
+  margin: 10px;
 }

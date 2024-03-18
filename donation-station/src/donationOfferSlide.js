@@ -20,19 +20,18 @@ function DonationOfferSlide({val, index, setDonations, donations}){
             <>
                 <div className="donationSlides">
                     <div>
-                        <p>Type: {val.donationType}</p>
-                        <p>Product: {val.specificDonation}</p>
-                        <p>Notes: {val.additionalNotes}</p>
+                        <h3>{val.specificDonation}</h3>
+                        <p>{val.additionalNotes}</p>
                     </div>
 
                     <div>
-                        <p>Address: {val.formattedAddress}</p>
+                        <p>{val.formattedAddress}</p>
                         <p style={{"textAlign":"center"}}>Pick-up time: <input className="time" type = "datetime-local" value={val.donationDropOffTime.substring(0, 16)} disabled/></p> 
                     </div>
                     {user.userId == val.userId ? 
 
                     <div>
-                        <button style={{"margin":"5px"}} onClick={()=>{deleteDonations(index, val.donationId)}}>Mark done</button>
+                        <button style={{"margin":"5px"}} onClick={()=>{deleteDonations(index, val.donationId)}}>Remove</button>
                         <button style={{"margin":"5px"}} onClick={()=>{navigate("/viewDonationOffer/" + val.donationId)}}>View</button>
                     </div>
                     : 

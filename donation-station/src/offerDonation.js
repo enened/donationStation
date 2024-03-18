@@ -19,8 +19,6 @@ function OfferDonation({setDonations, setOpen}){
             setDonations((donationRequests)=>{return [...donationRequests, {formattedAddress: location.formatted_address, coordinates: location.coordinates, 
             additionalNotes: additionalNotes, specificDonation: specificDonation, donationDropOffTime: donationDropOffTime, donationType: donationType, 
             userId: user.userId, donationRequestId: response.data.donationRequestId}]})  
-
-            alert("Successfully offered the donation!")
             setOpen(false);
         })
     }

@@ -19,8 +19,6 @@ function RequestDonation({setDonationRequests, setOpen}){
             setDonationRequests((donationRequests)=>{return [...donationRequests, {formattedAddress: location.formatted_address, coordinates: location.coordinates, 
             additionalNotes: additionalNotes, specificProductRequest: specificProductRequest, donationPickUpTime: donationPickUpTime, donationType: donationType, 
             userId: user.userId, donationRequestId: response.data.donationRequestId}]})  
-
-            alert("Successfully requested donation!")
             setOpen(false);
         })
     }

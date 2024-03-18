@@ -61,14 +61,14 @@ function SignupPage(){
                     apiKey={"AIzaSyAbNQnmsv9QRZlQnZqLGNKin3DVBV5xnXI"}
                     onPlaceSelected={(place) => {
                         if(place.geometry){
-                            setLocation(place.geometry.location.lat() + ", " + place.geometry.location.lng())
+                            setLocation({coordinates: place.geometry.location.lat() + ", " + place.geometry.location.lng(), formattedAddress: place.formatted_address})
                         }
                         else{
                             alert("Please enter a valid address")
                         }
                     }}
                     
-                    options = {{types: ["street_address"]}}
+                    options = {{types: ["address"]}}
                     placeholder = "Enter your address"
                 />  
 

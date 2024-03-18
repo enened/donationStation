@@ -41,13 +41,13 @@ app.post("/signUp",  (req, res) => {
           if (err){console.log(err)}
   
           // add encrypted password to database
-          db.query("insert into users(username, password, location) values(?, ?, ?)", [username, hash, location], (err, result)=>{
+          db.query("insert into users(username, password, formattedAddress, coordinates) values(?, ?, ?, ?)", [username, hash, location.formattedAddress, location.coordinates], (err, result)=>{
   
             if (err){console.log(err)}
   
             // create session for user and send userId
             req.session.user = {userId: result.insertId, username: username};
-            res.send({user: {userId: result.insertId, username: username, location: location}})
+            res.send({user: {userId: result.insertId, username: username, coordinates: location.coordinates, formattedAddress: location.formattedAddress}})
           })
   
         })
@@ -247,7 +247,7 @@ app.post("/getDonationOfferInfo",  (req, res) => {
 app.post("/getDonationMessages",  (req, res) => {
     const donationId = req.body.donationId;
     const type = req.body.type;
-    console.log(type)
+
     db.query(`select messages.*, users.username from messages left join users on users.userId = messages.messagerId where messages.originalPostId = ? and type = ?`, [donationId, type], (err, result) => {
         if (err){console.log(err)}
     
@@ -296,6 +296,61 @@ app.post("/postMessage",  (req, res) => {
 
         else{
             res.send({messageId: result.insertId})
+        }
+    })
+})
+
+// change address in database
+app.post("/saveAddress",  (req, res) => {
+    const location = req.body.location;
+    const userId = req.body.userId
+
+    db.query(`update users set coordinates = ?, formattedAddress = ? where userId = ?`, 
+    [location.coordinates, location.formattedAddress, userId], (err, result) => {
+        if (err){console.log(err)}
+
+        else{
+            res.send("ok")
+        }
+    })
+})
+
+// change password in database
+app.post("/savePassword",  (req, res) => {
+    const currPassword = req.body.currPassword;
+    const newPassword = req.body.newPassword;
+    const userId = req.body.userId
+
+    // check if current password correct
+    db.query(`select password from users where userId = ?`, [userId], (err, result) => {
+        if (err){console.log(err)}
+
+        else{
+            bcrypt.compare(currPassword, result[0].password, (err, response)=>{
+                if (err){console.log(err)}
+          
+                if (response){
+
+                    // encrypt new password
+                    bcrypt.hash(newPassword, saltRounds, (err, hash)=>{
+            
+                        if (err){console.log(err)}
+                        
+                        // add encrypted password to database
+                        db.query(`update users set password = ? where userId = ?`, [hash, userId], (err, result) => {
+                            if (err){console.log(err)}
+                    
+                            else{
+                                res.send("ok")
+                            }
+                        }) 
+                    })
+                }
+
+                else{
+                  res.send("Wrong password")
+                }
+            })
         }
     })
 })

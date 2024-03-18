@@ -24,7 +24,6 @@ function LoginPage(){
         });
     }
 
-    
     useEffect(()=>{
         if(!user){
             checkLoggedIn(setUser).then((user)=>{
@@ -35,6 +34,9 @@ function LoginPage(){
                     navigate("/")
                 }
             })
+        }
+        else{
+            navigate("/home")
         }
     }, [])
 

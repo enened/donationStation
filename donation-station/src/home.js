@@ -20,13 +20,15 @@ function Home(){
     const [userDonationRequests, setUserDonationRequests] = useState([])
     const [open, setOpen] = useState()
     const [openDonations, setOpenDonations] = useState()
+    const [page, setPage] = useState("donationRequests")
+
 
     function quickSortByDistance(array) {
         if (array.length <= 1) {
           return array;
         }
       
-        let distance = geolib.getDistance({latitude: parseInt(user.location.slice(0, user.location.indexOf(","))), longitude: parseInt(user.location.slice(user.location.indexOf(",") + 1, user.location.length))}, {
+        let distance = geolib.getDistance({latitude: parseInt(user.coordinates.slice(0, user.coordinates.indexOf(","))), longitude: parseInt(user.coordinates.slice(user.coordinates.indexOf(",") + 1, user.coordinates.length))}, {
             latitude: parseInt(array[0].coordinates.slice(0, array[0].coordinates.indexOf(","))), 
             longitude: parseInt(array[0].coordinates.slice(array[0].coordinates.indexOf(",") + 1, array[0].coordinates.length + 1))
         })
@@ -38,7 +40,7 @@ function Home(){
       
         for (var i = 1; i < array.length; i++) {
 
-            let distance = geolib.getDistance({latitude: parseInt(user.location.slice(0, user.location.indexOf(","))), longitude: parseInt(user.location.slice(user.location.indexOf(",") + 1, user.location.length))}, {
+            let distance = geolib.getDistance({latitude: parseInt(user.coordinates.slice(0, user.coordinates.indexOf(","))), longitude: parseInt(user.coordinates.slice(user.coordinates.indexOf(",") + 1, user.coordinates.length))}, {
                 latitude: parseInt(array[i].coordinates.slice(0, array[i].coordinates.indexOf(","))), 
                 longitude: parseInt(array[i].coordinates.slice(array[i].coordinates.indexOf(",") + 1, array[i].coordinates.length + 1))
             })
@@ -91,66 +93,90 @@ function Home(){
         <>
             <h1>Home</h1>
 
-            {/* Active donation requests */}
-            <h3>Donations you are requesting:</h3>
-            {userDonationRequests.map((val, index)=>{
-                return(
-                    <DonationRequestSlide val = {val} index = {index} setDonationRequests = {setUserDonationRequests} donationRequests = {userDonationRequests}/>
-                )
-                
-            })}
+            <div>
+                <button onClick={()=>{setPage("donationRequests")}} className={page != "donationRequests" ? "unactiveTab" : "activeTab"}>Donation requests</button>
+                <button onClick={()=>{setPage("donationOffers")}} className={page != "donationOffers" ? "unactiveTab" : "activeTab"}>Donation offers</button>
+                <button onClick={()=>{setPage("userDonationRequests")}} className={page != "userDonationRequests" ? "unactiveTab" : "activeTab"}>Your donation requests</button>
+                <button onClick={()=>{setPage("userDonationOffers")}} className={page != "userDonationOffers" ? "unactiveTab" : "activeTab"}>Your donation offers</button>
+            </div>
 
-            {userDonationRequests.length == 0 && <p className="inform">You don't have any active donation requests currently.</p>}
+            {page == "userDonationRequests" &&
+                <div>
+            
+                    {/* Active donation requests */}
+                    <h3>Donations you are requesting:</h3>
+                    {userDonationRequests.map((val, index)=>{
+                        return(
+                            <DonationRequestSlide val = {val} index = {index} setDonationRequests = {setUserDonationRequests} donationRequests = {userDonationRequests}/>
+                        )
+                        
+                    })}
 
-            <Popup open={open} closeOnDocumentClick = {false} trigger={<button onClick={()=>{setOpen(true)}}>Request donations</button>}>
-                <RequestDonation setOpen = {setOpen} setDonationRequests = {setUserDonationRequests}/>
-            </Popup>
+                    {userDonationRequests.length == 0 && <p className="info">You don't have any active donation requests currently.</p>}
 
-            {/* Active donation offers */}
-            <h3>Donations you are offering:</h3>
-            {userDonations.map((val, index)=>{
+                    <Popup open={open} onClose={()=>{setOpen(false)}} closeOnDocumentClick = {false} trigger={<button>Request donations</button>}>
+                        <RequestDonation setOpen = {setOpen} setDonationRequests = {setUserDonationRequests}/>
+                    </Popup>
 
-                return(
-                    <>
-                        <DonationOfferSlide val = {val} index = {index} setDonations = {setUserDonations} donations = {userDonations}/>
+                </div>
+            }
 
-                    </>
-                )
-            })}
+            {page == "userDonationOffers" &&
+                <div>
+                    {/* Active donation offers */}
+                    <h3>Donations you are offering:</h3>
+                    {userDonations.map((val, index)=>{
 
-            {userDonations.length == 0 && <p className="inform">You don't have any active donation offers currently.</p>}
+                        return(
+                            <>
+                                <DonationOfferSlide val = {val} index = {index} setDonations = {setUserDonations} donations = {userDonations}/>
 
-            <Popup open={openDonations} closeOnDocumentClick = {false} trigger={<button onClick={()=>{setOpenDonations(true)}}>Offer donations</button>}>
-                <OfferDonation setOpen = {setOpenDonations} setDonations = {setUserDonations}/>
-            </Popup>
+                            </>
+                        )
+                    })}
 
-            {/* Active donation requests of other users*/}
-            <h3>Donation requests:</h3>
-            {donationRequests.map((val, index)=>{
-                return(
-                    <>
-                        <DonationRequestSlide val = {val} index = {index} setDonationRequests = {setDonationRequests} donationRequests = {donationRequests}/>
+                    {userDonations.length == 0 && <p className="info">You don't have any active donation offers currently.</p>}
 
-                    </>
-                )
-                
-            })}
+                    <Popup open={openDonations}  onClose={()=>{setOpenDonations(false)}} closeOnDocumentClick = {false} trigger={<button>Offer donations</button>}>
+                        <OfferDonation setOpen = {setOpenDonations} setDonations = {setUserDonations}/>
+                    </Popup>
+                </div>
+            }
 
-            {donationRequests.length == 0 && <p className="inform">No donations requests available</p>}
+            {page == "donationRequests" &&
+                <div>
+                    {/* Active donation requests of other users*/}
+                    <h3>Donation requests:</h3>
+                    {donationRequests.map((val, index)=>{
+                        return(
+                            <>
+                                <DonationRequestSlide val = {val} index = {index} setDonationRequests = {setDonationRequests} donationRequests = {donationRequests}/>
 
+                            </>
+                        )
+                        
+                    })}
 
-            {/* Active donation offers of other users */}
-            <h3>Donation offers:</h3>
-            {donations.map((val, index)=>{
-                return(
-                    <>
-                        <DonationOfferSlide val = {val} index = {index} setDonations = {setDonations} donations = {donations}/>
+                    {donationRequests.length == 0 && <p className="info">No active donation requests found</p>}
+                </div>
+            }
 
-                    </>
-                )
-            })}
+            {page == "donationOffers" &&
+                <div>
+                    {/* Active donation offers of other users */}
+                    <h3>Donation offers:</h3>
+                    {donations.map((val, index)=>{
+                        return(
+                            <>
+                                <DonationOfferSlide val = {val} index = {index} setDonations = {setDonations} donations = {donations}/>
 
-            {donations.length == 0 && <p className="inform">No donations available</p>}
+                            </>
+                        )
+                    })}
+
+                    {donations.length == 0 && <p className="info">No donation offers available</p>}
+                </div>
+            }
         </>
     )
 }

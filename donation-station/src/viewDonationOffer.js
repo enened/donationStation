@@ -21,7 +21,7 @@ function ViewDonationOffers(){
           return array;
         }
       
-        let distance = geolib.getDistance({latitude: parseInt(user.location.slice(0, user.location.indexOf(","))), longitude: parseInt(user.location.slice(user.location.indexOf(",") + 1, user.location.length))}, {
+        let distance = geolib.getDistance({latitude: parseInt(user.coordinates.slice(0, user.coordinates.indexOf(","))), longitude: parseInt(user.coordinates.slice(user.coordinates.indexOf(",") + 1, user.coordinates.length))}, {
             latitude: parseInt(array[0].coordinates.slice(0, array[0].coordinates.indexOf(","))), 
             longitude: parseInt(array[0].coordinates.slice(array[0].coordinates.indexOf(",") + 1, array[0].coordinates.length + 1))
         })
@@ -33,7 +33,7 @@ function ViewDonationOffers(){
       
         for (var i = 1; i < array.length; i++) {
 
-            let distance = geolib.getDistance({latitude: parseInt(user.location.slice(0, user.location.indexOf(","))), longitude: parseInt(user.location.slice(user.location.indexOf(",") + 1, user.location.length))}, {
+            let distance = geolib.getDistance({latitude: parseInt(user.coordinates.slice(0, user.coordinates.indexOf(","))), longitude: parseInt(user.coordinates.slice(user.coordinates.indexOf(",") + 1, user.coordinates.length))}, {
                 latitude: parseInt(array[i].coordinates.slice(0, array[i].coordinates.indexOf(","))), 
                 longitude: parseInt(array[i].coordinates.slice(array[i].coordinates.indexOf(",") + 1, array[i].coordinates.length + 1))
             })
@@ -51,7 +51,7 @@ function ViewDonationOffers(){
                 navigate("/")
             }
 
-            response.data.donationOfferInfo.distance = geolib.getDistance({latitude: parseInt(user.location.slice(0, user.location.indexOf(","))), longitude: parseInt(user.location.slice(user.location.indexOf(",") + 1, user.location.length))}, {
+            response.data.donationOfferInfo.distance = geolib.getDistance({latitude: parseInt(user.coordinates.slice(0, user.coordinates.indexOf(","))), longitude: parseInt(user.coordinates.slice(user.coordinates.indexOf(",") + 1, user.coordinates.length))}, {
                 latitude: parseInt(response.data.donationOfferInfo.coordinates.slice(0, response.data.donationOfferInfo.coordinates.indexOf(","))), 
                 longitude: parseInt(response.data.donationOfferInfo.coordinates.slice(response.data.donationOfferInfo.coordinates.indexOf(",") + 1, response.data.donationOfferInfo.coordinates.length + 1))
             }) * 0.00062137
@@ -91,12 +91,12 @@ function ViewDonationOffers(){
 
     const postMessage = (message)=>{
         Axios.post("http://localhost:30013/postMessage", {messagerId: user.userId, originalPostId: donationId, type: "donation", message: message}).then((response)=>{
-            alert("Donor has been notfied!")
             setMessages([...messages, {username: user.username, userId: user.userId, message: message, messageId: response.data.messageId}])
         })
     }
 
-    console.log(messages)
+
+    
 
     return(
         <>

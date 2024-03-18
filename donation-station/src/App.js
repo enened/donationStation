@@ -7,6 +7,7 @@ import SignupPage from './signupPage.js';
 import Home from "./home.js";
 import ViewDonationRequest from './viewDonationRequest.js';
 import ViewDonationOffer from './viewDonationOffer.js';
+import Profile from './profile.js';
 
 function App() {
   const [user, setUser] = useState(null)
@@ -21,6 +22,7 @@ function App() {
               <Route exact path="/home" element={<Home />}/>
               <Route exact path="/viewDonationRequest/:donationRequestId" element={<ViewDonationRequest />}/>
               <Route exact path="/viewDonationOffer/:donationId" element={<ViewDonationOffer />}/>
+              <Route exact path="/profile" element={<Profile />}/>
               <Route path="*" element={<Navigate to="/" />}/>
               
           </Routes>

@@ -20,13 +20,12 @@ function DonationRequestSlide({val, index, setDonationRequests, donationRequests
             <>
             <div className="donationSlides">
                 <div>
-                    <p>Type: {val.donationType}</p>
-                    <p>Product: {val.specificProductRequest}</p>
-                    <p>Notes: {val.additionalNotes}</p>
+                    <h3>{val.specificProductRequest}</h3>
+                    <p>{val.additionalNotes}</p>
                 </div>
 
                 <div className="flexxCol">
-                    <p>Address: {val.formattedAddress}</p>
+                    <p>{val.formattedAddress}</p>
                     <div className="flexx">
                         <p style={{"textAlign":"center", "display":"inline"}}>Pick-up time: </p> 
                         <input className="time" type = "datetime-local" value={val.donationPickUpTime.substring(0, 16)} disabled/>
@@ -34,7 +33,7 @@ function DonationRequestSlide({val, index, setDonationRequests, donationRequests
                 </div>
                 {user.userId == val.userId ?
                 <div>
-                    <button style={{"margin":"5px"}} onClick={()=>{deleteDonationRequest(index, val.donationRequestId)}}>Mark done</button>
+                    <button style={{"margin":"5px"}} onClick={()=>{deleteDonationRequest(index, val.donationRequestId)}}>Remove</button>
                     <button style={{"margin":"5px"}} onClick={()=>{navigate("/viewDonationRequest/" + val.donationRequestId)}}>View</button>
                 </div> 
                 :

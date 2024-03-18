@@ -22,8 +22,12 @@ function Header(){
                 <div>
                     {!user ? (currentUrl == "/" ? <button onClick={()=>{navigate("/signUp")}}>Signup</button> :  <button onClick={()=>{navigate("/")}}>Login</button>)
                     :
-                    <button onClick={signout}>Signout</button>
+                    <>
+                        <button style={{"margin":"5px"}} onClick={()=>{navigate("/profile")}}>Profile</button>
+                        <button onClick={signout}>Signout</button>
+                    </>
                     }
+
                 </div>
 
             </div>
