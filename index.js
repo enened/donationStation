@@ -272,9 +272,9 @@ app.post("/getDonationOfferSuggestions",  (req, res) => {
 
 // get donation request suggestions of one donation offer
 app.post("/getDonationRequestSuggestions",  (req, res) => {
-    const donationOfferType = req.body.donationOfferType;
+    const donationRequestType = req.body.donationRequestType;
 
-    db.query(`select donation_requests.*, users.username from donation_requests left join users on users.userId = donation_requests.userId where donation_requests.donationType = ?`, [donationOfferType], (err, result) => {
+    db.query(`select donation_requests.*, users.username from donation_requests left join users on users.userId = donation_requests.userId where donation_requests.donationType = ?`, [donationRequestType], (err, result) => {
         if (err){console.log(err)}
     
         else{
