@@ -58,7 +58,7 @@ function SignupPage(){
                 <br/>
                 
                 <Autocomplete
-                    apiKey={"AIzaSyAbNQnmsv9QRZlQnZqLGNKin3DVBV5xnXI"}
+                    apiKey={""}
                     onPlaceSelected={(place) => {
                         if(place.geometry){
                             setLocation({coordinates: place.geometry.location.lat() + ", " + place.geometry.location.lng(), formattedAddress: place.formatted_address})
